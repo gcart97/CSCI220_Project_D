@@ -11,3 +11,6 @@ class Node:
 
     def __lt__(self, other):
         return self.freq < other.freq
+    
+    def Test():
+        
