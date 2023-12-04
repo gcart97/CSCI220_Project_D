@@ -2,7 +2,7 @@
 #12-4-23
 
 #class that holds the attributes for a node
-class HuffmanNode:
+class Node:
     def __init__(self, char, freq):
         self.char = char
         self.freq = freq
