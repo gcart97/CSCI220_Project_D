@@ -24,7 +24,33 @@ class node:
         self.huff = '' 
   
     def __lt__(self, nxt): 
-        return self.freq < nxt.freq 
+        return self.freq < nxt.freq
+    
+    #Decode function
+    def decode_huffman(encoded_str, root):
+        decoded_str = ''
+        current_node = root
+
+        for bit in encoded_str:
+            if bit == '0':
+                current_node = current_node.left
+            elif bit == '1':
+                current_node = current_node.right
+
+            if not current_node.left and not current_node.right:
+                decoded_str += current_node.symbol
+                current_node = root  # Reset to the root for the next character
+        return decoded_str
+    
+    #Encode function
+    def encode_huffman(char, root, current=''):
+        if not root:
+            return None
+        if root.symbol == char:
+            return current
+        left_encode = node.encode_huffman(char, root.left, current + '0')
+        right_encode = node.encode_huffman(char, root.right, current + '1')
+        return left_encode if left_encode is not None else right_encode
   
   
 # utility function to print huffman 
@@ -49,7 +75,7 @@ def printNodes(node, val=''):
   
   
 # characters for huffman tree 
-chars = ['a', 'b', 'c', 'd', 'e', 'f'] 
+chars = ['f', 'e', 'c', 'b', 'd', 'a'] 
   
 # frequency of characters 
 freq = [0.05, 0.09, 0.12, 0.13, 0.16, 0.45] 
@@ -80,4 +106,12 @@ while len(nodes) > 1:
     heapq.heappush(nodes, newNode) 
   
 # Huffman Tree is ready! 
-printNodes(nodes[0])
+huffman_root = nodes[0]
+printNodes(huffman_root)
+
+encoded_str = ' '.join([node.encode_huffman(char, huffman_root) for char in chars])
+decoded_str = node.decode_huffman(encoded_str, huffman_root)
+
+print(f"Original String and respective frequency: {chars}, {freq}")
+print(f"Encoded String: {encoded_str}")
+print(f"Decoded String: {decoded_str}")
