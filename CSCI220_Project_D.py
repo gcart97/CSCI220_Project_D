@@ -51,67 +51,81 @@ class node:
         left_encode = node.encode_huffman(char, root.left, current + '0')
         right_encode = node.encode_huffman(char, root.right, current + '1')
         return left_encode if left_encode is not None else right_encode
-  
-  
-# utility function to print huffman 
-# codes for all symbols in the newly 
-# created Huffman tree 
-def printNodes(node, val=''): 
-  
-    # huffman code for current node 
-    newVal = val + str(node.huff) 
-  
-    # if node is not an edge node 
-    # then traverse inside it 
-    if(node.left): 
-        printNodes(node.left, newVal) 
-    if(node.right): 
-        printNodes(node.right, newVal) 
-  
-        # if node is edge node then 
-        # display its huffman code 
-    if(not node.left and not node.right): 
-        print(f"{node.symbol} -> {newVal}") 
-  
-  
-# characters for huffman tree 
-chars = ['f', 'e', 'c', 'b', 'd', 'a'] 
-  
-# frequency of characters 
-freq = [0.05, 0.09, 0.12, 0.13, 0.16, 0.45] 
-  
-# list containing unused nodes 
-nodes = [] 
-  
-# converting characters and frequencies 
-# into huffman tree nodes 
-for x in range(len(chars)): 
-    heapq.heappush(nodes, node(freq[x], chars[x])) 
-  
-while len(nodes) > 1: 
-  
-    # sort all the nodes in ascending order 
-    # based on their frequency 
-    left = heapq.heappop(nodes) 
-    right = heapq.heappop(nodes) 
-  
-    # assign directional value to these nodes 
-    left.huff = 0
-    right.huff = 1
-  
-    # combine the 2 smallest nodes to create 
-    # new node as their parent 
-    newNode = node(left.freq+right.freq, left.symbol+right.symbol, left, right) 
-  
-    heapq.heappush(nodes, newNode) 
-  
-# Huffman Tree is ready! 
-huffman_root = nodes[0]
-printNodes(huffman_root)
+    
+#Read data from a text file
+def read_data_from_file(filename):
+    chars = []
+    freq = []
+    with open(filename, 'r') as file:
+        for line in file:
+            data = line.strip().split()
+            chars.append(data[0])
+            freq.append(float(data[1]))
+    return chars, freq
 
-encoded_str = ' '.join([node.encode_huffman(char, huffman_root) for char in chars])
-decoded_str = node.decode_huffman(encoded_str, huffman_root)
+def main():
+    filename = 'dataTeamX.txt'
 
-print(f"Original String and respective frequency: {chars}, {freq}")
-print(f"Encoded String: {encoded_str}")
-print(f"Decoded String: {decoded_str}")
+    # Read data from the file
+    chars, freq = read_data_from_file(filename)
+  
+    # utility function to print huffman 
+    # codes for all symbols in the newly 
+    # created Huffman tree 
+    def printNodes(node, val=''): 
+    
+        # huffman code for current node 
+        newVal = val + str(node.huff) 
+    
+        # if node is not an edge node 
+        # then traverse inside it 
+        if(node.left): 
+            printNodes(node.left, newVal) 
+        if(node.right): 
+            printNodes(node.right, newVal) 
+    
+            # if node is edge node then 
+            # display its huffman code 
+        if(not node.left and not node.right): 
+            print(f"{node.symbol} -> {newVal}") 
+    
+    # list containing unused nodes 
+    nodes = [] 
+    
+    # converting characters and frequencies 
+    # into huffman tree nodes 
+    for x in range(len(chars)): 
+        heapq.heappush(nodes, node(freq[x], chars[x])) 
+    
+    while len(nodes) > 1: 
+    
+        # sort all the nodes in ascending order 
+        # based on their frequency 
+        left = heapq.heappop(nodes) 
+        right = heapq.heappop(nodes) 
+    
+        # assign directional value to these nodes 
+        left.huff = 0
+        right.huff = 1
+    
+        # combine the 2 smallest nodes to create 
+        # new node as their parent 
+        newNode = node(left.freq+right.freq, left.symbol+right.symbol, left, right) 
+    
+        heapq.heappush(nodes, newNode) 
+    
+    # Huffman Tree is ready! 
+    huffman_root = nodes[0]
+    printNodes(huffman_root)
+
+    #assigns the encoded and decoded strings to variables
+    encoded_str = ' '.join([node.encode_huffman(char, huffman_root) for char in chars])
+    decoded_str = node.decode_huffman(encoded_str, huffman_root)
+
+    #prints the original strings and frequencies; encoded strings; decoded strings
+    print(f"Original String and respective frequency: {chars}, {freq}")
+    print(f"Encoded String: {encoded_str}")
+    print(f"Decoded String: {decoded_str}")
+
+if __name__ == "__main__":
+    main()
